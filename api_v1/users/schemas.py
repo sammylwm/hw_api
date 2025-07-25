@@ -26,3 +26,7 @@ class UserUpdatePartial(UserCreate):
 class User(UserBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
+
+class LoginData(BaseModel):
+    email: str
+    password: str

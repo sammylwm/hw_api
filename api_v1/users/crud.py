@@ -13,6 +13,18 @@ from core.models import User
 from .schemas import UserCreate, UserUpdate, UserUpdatePartial
 
 
+async def user_exists(session: AsyncSession, email: str, password: str) -> int:
+    result = await session.execute(
+        select(User).where(User.email == email)
+    )
+    user = result.scalar_one_or_none()
+    if not user:
+        return 0
+    if user.password != password:
+        return 1
+    return 2
+
+
 async def get_users(session: AsyncSession) -> list[User]:
     stmt = select(User).order_by(User.id)
     result: Result = await session.execute(stmt)
@@ -33,10 +45,10 @@ async def create_user(session: AsyncSession, user_in: UserCreate) -> User:
 
 
 async def update_user(
-    session: AsyncSession,
-    user: User,
-    user_update: UserUpdate | UserUpdatePartial,
-    partial: bool = False,
+        session: AsyncSession,
+        user: User,
+        user_update: UserUpdate | UserUpdatePartial,
+        partial: bool = False,
 ) -> User:
     for name, value in user_update.model_dump(exclude_unset=partial).items():
         setattr(user, name, value)
@@ -45,8 +57,8 @@ async def update_user(
 
 
 async def delete_user(
-    session: AsyncSession,
-    user: User,
+        session: AsyncSession,
+        user: User,
 ) -> None:
     await session.delete(user)
     await session.commit()
