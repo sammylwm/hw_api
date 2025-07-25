@@ -7,4 +7,4 @@ class User(Base):
     email: Mapped[str]
     password: Mapped[str]
     login_dn: Mapped[str]
-    password: Mapped[str]
+    password_dn: Mapped[str]
