@@ -4,7 +4,7 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.attributes import flag_modified
 
-from core.models import classes, Classes
+from core.models import classes, Classes, User
 from .schedule import get_schedule_with_class, RU_TO_EN_subjects, EN_TO_RU_subjects
 
 from .schemas import ClassesCreate, ClassesUpdate, ClassesUpdatePartial
@@ -80,3 +80,15 @@ async def get_hw(session: AsyncSession, class_name: str, date: str)-> list:
         except:
             list_hw.append(f"{subject}.нет дз")
     return list_hw
+
+async def get_members(session: AsyncSession, class_name: str) -> dict:
+    stmt = select(User).order_by(User.email).filter_by(class_name=class_name)
+    result: Result = await session.execute(stmt)
+    users = result.scalars().all()
+    users = [user.email for user in users]
+
+    class_ = await session.get(Classes, class_name)
+    admins = class_.admins
+    admins.append(class_.owner)
+    array = {"members": list(users), "admins": admins}
+    return array

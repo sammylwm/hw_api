@@ -3,7 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper
 from . import crud
-from .schemas import Classes, ClassesCreate, ClassesUpdate, ClassesUpdatePartial, CheckAdmin, CheckLes, AddHw, GetHw
+from .schemas import Classes, ClassesCreate, ClassesUpdate, ClassesUpdatePartial, CheckAdmin, CheckLes, AddHw, GetHw, \
+    GetMembers
 
 router = APIRouter(tags=["Classes"])
 
@@ -36,3 +37,9 @@ async def get_hw(data: GetHw,
                       session: AsyncSession = Depends(db_helper.scoped_session_dependency),
                       ):
     return await crud.get_hw(session, data.class_name, data.date)
+
+@router.post("/get_members/", response_model=dict)
+async def get_members(data: GetMembers,
+                      session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+                      ):
+    return await crud.get_members(session, data.class_name)

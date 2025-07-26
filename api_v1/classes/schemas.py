@@ -43,3 +43,6 @@ class AddHw(BaseModel):
 class GetHw(BaseModel):
     date: str
     class_name: str
+
+class GetMembers(BaseModel):
+    class_name: str
