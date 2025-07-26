@@ -3,8 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper
 from . import crud
-from .dependencies import user_by_id
 from .schemas import User, UserCreate, UserUpdate, UserUpdatePartial, LoginData, GetDatas
+from ..classes.crud import get_classes, create_info_class
 
 router = APIRouter(tags=["Users"])
 
@@ -37,6 +37,9 @@ async def create_user(
         user_in: UserCreate,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    class_ = await get_classes(session, user_in.class_name)
+    if class_ is None:
+        await create_info_class(session, user_in.class_name, user_in.email)
     return await crud.create_user(session=session, user_in=user_in)
 
 #
