@@ -4,7 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from .base import Base
 
 class Classes(Base):
-    class_name: Mapped[str] = mapped_column(unique=True)
+    class_name: Mapped[str] = mapped_column(primary_key=True)
     schedule: Mapped[dict] = mapped_column(JSON)
     homeworks: Mapped[dict] = mapped_column(JSON)
     owner: Mapped[str]

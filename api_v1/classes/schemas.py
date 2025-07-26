@@ -25,9 +25,23 @@ class ClassesUpdatePartial(BaseModel):
 
 
 class Classes(ClassesBase):
-    id: int
     model_config = ConfigDict(from_attributes=True)
 
 class CheckAdmin(BaseModel):
     class_name: str
     email: str
+
+class CheckLes(BaseModel):
+    class_name: str
+    subject: str
+    weekday: str
+
+class AddHw(BaseModel):
+    hw: str
+    subject: str
+    date: str
+    class_name: str
+
+class GetHw(BaseModel):
+    date: str
+    class_name: str
