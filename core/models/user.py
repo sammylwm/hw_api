@@ -5,6 +5,7 @@ from .base import Base
 
 class User(Base):
     email: Mapped[str] = mapped_column(unique=True)
+    class_name: Mapped[str] = mapped_column(default="DefaultClass")
     password: Mapped[str]
     login_dn: Mapped[str]
     password_dn: Mapped[str]

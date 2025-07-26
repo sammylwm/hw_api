@@ -25,6 +25,15 @@ async def user_exists(session: AsyncSession, email: str, password: str) -> int:
     return 2
 
 
+async def get_log_passw_class(session: AsyncSession, email: str) -> list:
+    result = await session.execute(
+        select(User).where(User.email == email)
+    )
+    user = result.scalar_one_or_none()
+    if not user:
+        return []
+    return [user.class_name, user.login_dn, user.password_dn]
+
 async def get_users(session: AsyncSession) -> list[User]:
     stmt = select(User).order_by(User.id)
     result: Result = await session.execute(stmt)
