@@ -7,9 +7,9 @@ BASE_DIR = Path(__file__).parent.parent
 class Setting(BaseSettings):
     api_v1_prefix: str = "/api/v1"
 
-    db_url: str = f"sqlite+aiosqlite:///{BASE_DIR}/db.sqlite3"
-    # db_echo: bool = False
-    db_echo: bool = True
+    db_url: str = "postgresql+asyncpg://sammy:Leto2025@pg:5432/hwApp"
+    db_echo: bool = False
+
 
 
 settings = Setting()

@@ -62,8 +62,3 @@ def get_schedule_with_class(class_name: str) -> dict:
             subjects.append(RU_TO_EN_subjects[j])
         res[i] = subjects
     return res
-
-
-schedule = get_schedule_with_class("11A")
-print(schedule["monday"])
-print(int("Алгебра" in schedule["monday"]))
