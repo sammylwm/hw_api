@@ -3,8 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper
 from . import crud
-from .schemas import Classes, ClassesCreate, ClassesUpdate, ClassesUpdatePartial, CheckAdmin, CheckLes, AddHw, GetHw, \
-    GetMembers
+from .schemas import Classes, CheckAdmin, CheckLes, AddHw, GetHw, GetMembers
 
 router = APIRouter(tags=["Classes"])
 
