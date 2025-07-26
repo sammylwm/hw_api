@@ -4,7 +4,6 @@ from typing import Optional
 
 class ClassesBase(BaseModel):
     class_name: str
-    schedule: dict
     homeworks: dict
     owner: str
     admins: list
@@ -18,7 +17,6 @@ class ClassesUpdate(ClassesCreate):
 
 class ClassesUpdatePartial(BaseModel):
     class_name: Optional[str] = None
-    schedule: Optional[dict] = None
     homeworks: Optional[dict] = None
     owner: Optional[str] = None
     admins: Optional[list] = None

@@ -2,8 +2,10 @@ import datetime
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm.attributes import flag_modified
+
 from core.models import classes, Classes
-from .schedule import get_schedule_with_class, RU_TO_EN_subjects
+from .schedule import get_schedule_with_class, RU_TO_EN_subjects, EN_TO_RU_subjects
 
 from .schemas import ClassesCreate, ClassesUpdate, ClassesUpdatePartial
 
@@ -39,32 +41,42 @@ async def check_admin(session: AsyncSession, class_name: str, email: str) -> int
 
 async def less_in_day(class_name:str, subject: str, weekday: str) -> int:
     schedule = get_schedule_with_class(class_name)
+    subject = RU_TO_EN_subjects[subject]
     return int(subject in schedule[weekday])
 
 
-async def add_hw(session: AsyncSession, class_name: str, subject: str, data: str, homework: str) -> int:
-    # homeworks - {"subject": {"date": ["homework", ...], ...}, ...}
-    subject = RU_TO_EN_subjects[subject]
-    class_ = await session.get(Classes, class_name)
-    homeworks = class_.homeworks
-    if data in homeworks[subject].keys():
-        homeworks[subject][data].append(homework)
-    else:
-        homeworks[subject][data] = [homework]
-
-    class_.homeworks = homeworks
-    await session.commit()
+async def add_hw(session: AsyncSession, class_name: str, subject: str, date: str, homework: str) -> int:
+    try:
+        subject = RU_TO_EN_subjects[subject]
+        class_ = await session.get(Classes, class_name)
+        homeworks = class_.homeworks
+        if subject not in homeworks.keys():
+            homeworks[subject] = {}
+        if date not in homeworks[subject].keys():
+            homeworks[subject][date] = []
+        homeworks[subject][date].append(homework)
+        class_.homeworks = homeworks
+        flag_modified(class_, "homeworks")
+        await session.commit()
+    except:
+        return 1
 
 async def get_hw(session: AsyncSession, class_name: str, date: str)-> list:
     weekday = (datetime.datetime(int(date.split('.')[2]), int(date.split('.')[1]),
                             int(date.split('.')[0])).weekday())
     if weekday == 6:
         return ["нет предметов.нет дз"]
-
     class_ = await session.get(Classes, class_name)
     day, month, year = map(int, date.split("."))
     weekday = datetime.date(year, month, day).strftime("%A").lower()
-    subjects = get_schedule_with_class(class_name)[weekday]
+    schedule = get_schedule_with_class(class_name)
+    subjects = schedule[weekday]
     list_hw = []
     for subject in subjects:
-        hw = class_.homeworks
+        subject = EN_TO_RU_subjects[subject]
+        try:
+            hw =  class_.homeworks[subject][date]
+            list_hw.append(f"{subject}.{hw}")
+        except:
+            list_hw.append(f"{subject}.нет дз")
+    return list_hw

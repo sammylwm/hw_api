@@ -35,4 +35,4 @@ async def add_hw(data: AddHw,
 async def get_hw(data: GetHw,
                       session: AsyncSession = Depends(db_helper.scoped_session_dependency),
                       ):
-    return []
+    return await crud.get_hw(session, data.class_name, data.date)
