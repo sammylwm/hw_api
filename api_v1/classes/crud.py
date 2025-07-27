@@ -28,8 +28,7 @@ async def get_classes(session: AsyncSession, class_name: str) -> Classes | None:
 #     admins: Mapped[list] = mapped_column(JSON)
 
 async def create_info_class(session: AsyncSession, class_name: str, owner: str) -> Classes:
-    schedule = get_schedule_with_class(class_name)
-    class_info = Classes(class_name=class_name, schedule=schedule, homeworks={}, owner=owner, admins=[])
+    class_info = Classes(class_name=class_name, homeworks={}, owner=owner, admins=[])
     session.add(class_info)
     await session.commit()
     # await session.refresh(User)
