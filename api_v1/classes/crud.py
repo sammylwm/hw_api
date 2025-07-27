@@ -57,8 +57,9 @@ async def add_hw(session: AsyncSession, class_name: str, subject: str, date: str
         class_.homeworks = homeworks
         flag_modified(class_, "homeworks")
         await session.commit()
-    except:
         return 1
+    except:
+        return 0
 
 async def get_hw(session: AsyncSession, class_name: str, date: str)-> list:
     weekday = (datetime.datetime(int(date.split('.')[2]), int(date.split('.')[1]),
