@@ -40,12 +40,14 @@ async def get_users(session: AsyncSession) -> list[User]:
     users = result.scalars().all()
     return list(users)
 
-async def create_user(session: AsyncSession, user_in: UserCreate) -> User:
-    user = User(**user_in.model_dump())
-    session.add(user)
-    await session.commit()
-    # await session.refresh(User)
-    return user
+async def create_user(session: AsyncSession, user_in: UserCreate) -> bool:
+    try:
+        user = User(**user_in.model_dump())
+        session.add(user)
+        await session.commit()
+        return True
+    except:
+        return False
 
 
 async def update_user(

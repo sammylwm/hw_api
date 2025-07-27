@@ -30,7 +30,7 @@ async def user_exists(data: GetDatas,
 
 @router.post(
     "/create/",
-    response_model=User,
+    response_model=bool,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_user(
