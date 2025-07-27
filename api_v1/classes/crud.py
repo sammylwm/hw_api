@@ -73,12 +73,11 @@ async def get_hw(session: AsyncSession, class_name: str, date: str)-> list:
     subjects = schedule[weekday]
     list_hw = []
     for subject in subjects:
-        subject = EN_TO_RU_subjects[subject]
         try:
             hw =  class_.homeworks[subject][date]
-            list_hw.append(f"{subject}.{hw}")
+            list_hw.append(f"{EN_TO_RU_subjects[subject]}.{hw}")
         except:
-            list_hw.append(f"{subject}.нет дз")
+            list_hw.append(f"{EN_TO_RU_subjects[subject]}.нет дз")
     return list_hw
 
 async def get_members(session: AsyncSession, class_name: str) -> dict:
