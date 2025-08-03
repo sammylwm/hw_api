@@ -80,14 +80,31 @@ async def get_hw(session: AsyncSession, class_name: str, date: str)-> list:
             list_hw.append(f"{EN_TO_RU_subjects[subject]}.нет дз")
     return list_hw
 
-async def get_members(session: AsyncSession, class_name: str) -> dict:
-    stmt = select(User).order_by(User.email).filter_by(class_name=class_name)
-    result: Result = await session.execute(stmt)
-    users = result.scalars().all()
-    users = [user.email for user in users]
-
+async def get_admins(session: AsyncSession, class_name: str) -> dict:
     class_ = await session.get(Classes, class_name)
-    admins = class_.admins
-    admins.append(class_.owner)
-    array = {"members": list(users), "admins": admins}
+    array = {"owner": class_.owner, "admins": class_.admins}
     return array
+
+async def add_admin(session: AsyncSession, class_name: str, email: str) -> int:
+    try:
+        class_ = await session.get(Classes, class_name)
+        admins = class_.admins
+        admins.append(email)
+        class_.admins = admins
+        flag_modified(class_, "admins")
+        await session.commit()
+        return 1
+    except:
+        return 0
+
+async def del_admin(session: AsyncSession, class_name: str, email: str) -> int:
+    try:
+        class_ = await session.get(Classes, class_name)
+        admins = class_.admins
+        admins.remove(email)
+        class_.admins = admins
+        flag_modified(class_, "admins")
+        await session.commit()
+        return 1
+    except:
+        return 0

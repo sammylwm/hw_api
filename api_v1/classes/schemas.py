@@ -46,3 +46,7 @@ class GetHw(BaseModel):
 
 class GetMembers(BaseModel):
     class_name: str
+
+class AdminAction(BaseModel):
+    class_name: str
+    email: str
