@@ -17,7 +17,7 @@ async def send_code(session: AsyncSession, email: str)-> int:
     if_exists = await user_exists(session, email, "")
     if if_exists == 1:
         return 0
-    code = ''.join(random.choices('0123456789', k=6))
+    code = ''.join(random.choices('123456789', k=6))
     try:
         result = await session.execute(select(Register).where(Register.email == email))
         user = result.scalar_one_or_none()
