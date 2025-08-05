@@ -11,5 +11,5 @@ class RegisterCreate(RegisterBase):
 class Register(RegisterBase):
     model_config = ConfigDict(from_attributes=True)
 
-class RegisterData:
+class RegisterData(BaseModel):
     email: str
