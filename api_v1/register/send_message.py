@@ -3,9 +3,9 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-def send_message(code: str):
+def send_message(email: str, code: str):
     addr_from = "hwappinfo@gmail.com"
-    addr_to = "hopemikaelsonl@yandex.ru"
+    addr_to = email
     password = "fmgjybogrljzdtgl"
 
     msg = MIMEMultipart()

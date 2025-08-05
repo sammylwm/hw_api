@@ -29,7 +29,7 @@ async def send_code(session: AsyncSession, email: str)-> int:
             session.add(user)
 
         await session.commit()
-        send_message(code)
+        send_message(email, code)
         return int(code)
     except Exception as e:
         await session.rollback()
