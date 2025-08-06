@@ -6,12 +6,7 @@ from api_v1 import router as api_router
 from core.config import settings
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    yield
-
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(docs_url=None, redoc_url=None)
 app.include_router(router=api_router)
 
 
