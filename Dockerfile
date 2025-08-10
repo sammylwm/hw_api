@@ -13,11 +13,10 @@ RUN pip install --upgrade pip "uv==0.6.3"
 
 COPY pyproject.toml uv.lock ./
 
-RUN uv sync --locked --no-dev
+RUN pip install playwright \
+    && playwright install --with-deps
 
-ENV PATH="/data/.venv/bin:$PATH"
-
-COPY entrypoint.sh .
+EXPOSE 8001
 
 RUN chmod +x entrypoint.sh
 
