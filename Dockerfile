@@ -12,6 +12,7 @@ WORKDIR /data
 RUN pip install --upgrade pip "uv==0.6.3"
 
 COPY pyproject.toml uv.lock ./
+COPY entrypoint.sh .
 
 RUN pip install playwright \
     && playwright install --with-deps
