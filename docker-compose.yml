@@ -11,7 +11,7 @@ services:
     command:
       - "python"
       - "main.py"
-      -
+
   hwApp_pg:
     image: postgres:17
     environment:
