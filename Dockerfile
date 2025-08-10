@@ -1,15 +1,24 @@
-FROM python:3.12.6-bookworm
+FROM python:3.13.4-bookworm
 
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Enable bytecode compilation
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
 WORKDIR /data
-COPY pyproject.toml .
 
-RUN pip install uv
-RUN uv sync
+RUN pip install --upgrade pip "uv==0.6.3"
 
-RUN pip install playwright \
-    && playwright install --with-deps
+COPY pyproject.toml uv.lock ./
 
-EXPOSE 8000
+RUN uv sync --locked --no-dev
 
-# Запуск приложения
-CMD ["uv", "run", "main.py"]
+ENV PATH="/data/.venv/bin:$PATH"
+
+COPY entrypoint.sh .
+
+RUN chmod +x entrypoint.sh
+
+ENTRYPOINT ["sh", "./entrypoint.sh"]
