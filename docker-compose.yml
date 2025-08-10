@@ -9,7 +9,8 @@ services:
     volumes:
       - .:/data
     command:
-      - "python"
+      - "uv"
+      - "run"
       - "main.py"
 
   hw_app_pg:
