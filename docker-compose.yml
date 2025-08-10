@@ -11,13 +11,13 @@ services:
     command:
       - "python"
       - "main.py"
-
+      -
   hwApp_pg:
     image: postgres:17
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: hwApp
+      POSTGRES_USER: sammy
+      POSTGRES_PASSWORD: Leto2025
       POSTGRES_DATA: /var/lib/postgresql/data
     volumes:
       - hwApp_pg_data:/var/lib/postgresql/data
