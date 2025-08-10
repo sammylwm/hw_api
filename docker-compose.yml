@@ -1,9 +1,9 @@
 services:
-  hwApp_bot:
+  hw_app_bot:
     build:
       dockerfile: ./Dockerfile
     restart: unless-stopped
-    container_name: hwApp_bot
+    container_name: hw_app_bot
     ports:
       - "8001:8000"
     volumes:
@@ -12,7 +12,7 @@ services:
       - "python"
       - "main.py"
 
-  hwApp_pg:
+  hw_app_pg:
     image: postgres:17
     environment:
       POSTGRES_DB: hwApp
