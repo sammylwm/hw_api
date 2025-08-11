@@ -1,4 +1,7 @@
+from sqlalchemy import JSON
+from sqlalchemy.ext.mutable import MutableDict, MutableList
 from sqlalchemy.orm import Mapped, mapped_column
+
 
 from .base import Base
 

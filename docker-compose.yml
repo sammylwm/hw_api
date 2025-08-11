@@ -6,12 +6,18 @@ services:
     container_name: hw_app_bot
     ports:
       - "8001:8000"
-    volumes:
-      - .:/data
     command:
-      - "uv"
-      - "run"
+      - "python"
       - "main.py"
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - .venv/
+        - action: rebuild
+          path: ./uv.lock
 
   hw_app_pg:
     image: postgres:17
