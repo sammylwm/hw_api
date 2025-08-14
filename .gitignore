@@ -12,3 +12,4 @@ wheels/
 /.idea/
 /others/test.py
 /app/test.py
+.env
