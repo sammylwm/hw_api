@@ -1,9 +1,8 @@
 services:
-  hw_app_bot:
+  api:
     build:
       dockerfile: ./Dockerfile
     restart: unless-stopped
-    container_name: hw_app_bot
     ports:
       - "8001:8000"
     command:
@@ -19,14 +18,20 @@ services:
         - action: rebuild
           path: ./uv.lock
 
-  hw_app_pg:
+  pg:
     image: postgres:17
     environment:
-      POSTGRES_DB: hwApp
-      POSTGRES_USER: sammy
-      POSTGRES_PASSWORD: Leto2025
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DATA: /var/lib/postgresql/data
     volumes:
       - hwApp_pg_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    ports:
+      - "1009:8080"
+
 volumes:
   hwApp_pg_data:

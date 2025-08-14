@@ -18,7 +18,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 ENV PATH="/app/.venv/bin:$PATH"
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install playwright \
-    && playwright install --with-deps
+    && playwright install chromium --with-deps
 
 RUN chmod +x entrypoint.sh
 
