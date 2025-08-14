@@ -1,4 +1,5 @@
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+
 WORKDIR /app
 
 ENV UV_COMPILE_BYTECODE=1
@@ -13,16 +14,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 COPY . /app
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-dev
-
-ENV PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright
-
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install playwright
-
-RUN --mount=type=cache,target=/root/.cache/ms-playwright \
-    playwright install chromium --with-deps
-
+    uv sync --locked --no-dev \
+    && uv run playwright install chromium --with-deps
+ENV PATH="/app/.venv/bin:$PATH"
 
 RUN chmod +x entrypoint.sh
 
