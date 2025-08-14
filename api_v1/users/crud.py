@@ -1,15 +1,8 @@
-"""
-Create
-Read
-Update
-Delete
-"""
-
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import User
-
+import crypto
 from .schemas import UserCreate, UserUpdate, UserUpdatePartial
 
 
@@ -20,7 +13,7 @@ async def user_exists(session: AsyncSession, email: str, password: str) -> int:
     user = result.scalar_one_or_none()
     if not user:
         return 0
-    if user.password != password:
+    if password != crypto.unencrypt(user.password):
         return 1
     return 2
 
@@ -32,7 +25,7 @@ async def get_log_passw_class(session: AsyncSession, email: str) -> list:
     user = result.scalar_one_or_none()
     if not user:
         return []
-    return [user.class_name, user.login_dn, user.password_dn]
+    return [user.class_name, crypto.unencrypt(user.login_dn), crypto.unencrypt(user.password_dn)]
 
 async def get_users(session: AsyncSession) -> list[User]:
     stmt = select(User).order_by(User.email)
@@ -43,23 +36,14 @@ async def get_users(session: AsyncSession) -> list[User]:
 async def create_user(session: AsyncSession, user_in: UserCreate) -> bool:
     try:
         user = User(**user_in.model_dump())
+        user.password = crypto.encrypt(user.password)
+        user.login_dn = crypto.encrypt(user.login_dn)
+        user.password_dn = crypto.encrypt(user.password_dn)
         session.add(user)
         await session.commit()
         return True
     except:
         return False
-
-
-async def update_user(
-        session: AsyncSession,
-        user: User,
-        user_update: UserUpdate | UserUpdatePartial,
-        partial: bool = False,
-) -> User:
-    for name, value in user_update.model_dump(exclude_unset=partial).items():
-        setattr(user, name, value)
-    await session.commit()
-    return User
 
 
 async def delete_user(
