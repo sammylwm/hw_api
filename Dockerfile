@@ -13,7 +13,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 COPY . /app
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-dev \
+    uv sync --locked --no-dev
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright
 
