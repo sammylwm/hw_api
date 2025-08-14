@@ -13,6 +13,8 @@ async def user_exists(session: AsyncSession, email: str, password: str) -> int:
     user = result.scalar_one_or_none()
     if not user:
         return 0
+    if not password:
+        return 1
     if password != crypto.unencrypt(user.password):
         return 1
     return 2
