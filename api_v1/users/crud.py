@@ -42,7 +42,8 @@ async def create_user(session: AsyncSession, user_in: UserCreate) -> bool:
         session.add(user)
         await session.commit()
         return True
-    except:
+    except Exception as e:
+        print("Error creating user:", e)
         return False
 
 
