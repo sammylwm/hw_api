@@ -31,7 +31,7 @@ services:
   adminer:
     image: adminer
     ports:
-      - "1009:8080"
+      - "1803:8080"
 
 volumes:
   hwApp_pg_data:
