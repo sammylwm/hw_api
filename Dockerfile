@@ -16,9 +16,14 @@ COPY . /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev
 ENV PATH="/app/.venv/bin:$PATH"
+# Устанавливаем playwright и pip пакеты
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install playwright \
-    && playwright install chromium --with-deps
+    pip install playwright
+
+# Устанавливаем Chromium с кэшем
+RUN --mount=type=cache,target=/root/.cache/ms-playwright \
+    playwright install chromium --with-deps
+
 
 RUN chmod +x entrypoint.sh
 
