@@ -1,8 +1,8 @@
-"""class_name primary_key
+"""start
 
-Revision ID: 43670e750c90
+Revision ID: d8d071b478bb
 Revises:
-Create Date: 2025-07-26 14:48:18.217438
+Create Date: 2025-08-21 13:45:53.722265
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "43670e750c90"
+revision: str = "d8d071b478bb"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -25,7 +25,6 @@ def upgrade() -> None:
     op.create_table(
         "classess",
         sa.Column("class_name", sa.String(), nullable=False),
-        sa.Column("schedule", sa.JSON(), nullable=False),
         sa.Column("homeworks", sa.JSON(), nullable=False),
         sa.Column("owner", sa.String(), nullable=False),
         sa.Column("admins", sa.JSON(), nullable=False),

@@ -31,6 +31,8 @@ services:
     volumes:
       - hwApp_pg_data:/var/lib/postgresql/data
     restart: unless-stopped
+    ports:
+      - "5432:5432"
 
   adminer:
     image: adminer
