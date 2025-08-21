@@ -1,12 +1,26 @@
-from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from api_v1 import router as routers_api
+from config_reader import dp, app, config
+from bot.handlers import setup_routers
+
 import uvicorn
-from api_v1 import router as api_router
-from core.config import settings
 
-app = FastAPI(docs_url=None, redoc_url=None)
-app.include_router(router=api_router)
+from core.models import db_helper
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+dp.include_router(setup_routers())
+
+app.include_router(routers_api)
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+    uvicorn.run(
+        app,
+        host=config.APP_HOST,
+        port=config.APP_PORT,
+    )

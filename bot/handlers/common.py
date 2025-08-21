@@ -1,23 +1,19 @@
 from aiogram import Router
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message
 from aiogram.filters import CommandStart
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from core.models import User
 
 router = Router()
 
 
 @router.message(CommandStart())
-async def start(ms: Message):
-    text = """
-        Добро пожаловать. Это телеграм-бот благотворительной организации "Трезвое Дело".
-    Вы можете записаться на консультацию с Евгением Леднёвым.  
-        """
-    keyboard = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text="Записаться на консультацию", callback_data="application"
-                )
-            ]
-        ]
-    )
-    await ms.answer(text, reply_markup=keyboard)
+async def start(ms: Message, **data):
+    session: AsyncSession = data["session"]
+    # user = User(email="lednevdosa@gmail.com", class_name="11A", password="1234", login_dn="1", password_dn="2")
+    # session.add(user)
+    # await session.commit()
+    res = await session.execute(select(User))
+    users = res.scalars().first()
+    await ms.answer(users.email or "Пользователи не найдены")

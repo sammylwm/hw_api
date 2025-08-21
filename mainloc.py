@@ -1,10 +1,12 @@
 import asyncio
 import logging
 from bot.handlers import setup_routers
+from bot.middleware import DbSessionMiddleware
 from config_reader import dp, bot
+from core.models import db_helper
 
 dp.include_router(setup_routers())
-
+dp.message.middleware(DbSessionMiddleware(db_helper.scoped_session_dependency))
 
 async def main():
     logging.basicConfig(level=logging.INFO)

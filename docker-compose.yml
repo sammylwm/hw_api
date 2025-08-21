@@ -3,6 +3,7 @@ services:
     build:
       dockerfile: ./Dockerfile
     restart: unless-stopped
+    container_name: hw_api-api
     ports:
       - "8001:8000"
     command:
@@ -20,6 +21,7 @@ services:
 
   db:
     image: postgres:17
+    container_name: hw_api-db
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -31,6 +33,7 @@ services:
 
   adminer:
     image: adminer
+    container_name: hw_api-adminer
     ports:
       - "1803:8080"
     restart: unless-stopped
