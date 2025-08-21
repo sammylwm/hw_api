@@ -1,5 +1,3 @@
-version: "3.9"  # или нужная тебе версия
-
 services:
   api:
     build:
@@ -13,8 +11,6 @@ services:
     command:
       - "python"
       - "main.py"
-    networks:
-      - hwApp_network
     develop:
       watch:
         - action: sync
@@ -35,8 +31,6 @@ services:
     volumes:
       - hwApp_pg_data:/var/lib/postgresql/data
     restart: unless-stopped
-    networks:
-      - hwApp_network
 
   adminer:
     image: adminer
@@ -44,12 +38,6 @@ services:
     ports:
       - "1803:8080"
     restart: unless-stopped
-    networks:
-      - hwApp_network
 
 volumes:
   hwApp_pg_data:
-
-networks:
-  hwApp_network:
-    driver: bridge
