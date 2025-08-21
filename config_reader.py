@@ -12,11 +12,6 @@ class Config(BaseSettings):
     APP_PORT: int = "8000"
     DB_URL: str = "postgresql+asyncpg://sammy:Dosya1009@db:5432/hwApp"
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-    )
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator:
