@@ -13,6 +13,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-install-project --no-dev
 
 COPY . /app
+COPY .env /app/.env
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev \
     && uv run playwright install chromium --with-deps
