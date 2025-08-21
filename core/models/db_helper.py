@@ -41,6 +41,6 @@ class DatabaseHelper:
 
 
 db_helper = DatabaseHelper(
-    url=config.DB_URL.get_secret_value(),
+    url=config.DB_URL,
     echo=False,
 )
