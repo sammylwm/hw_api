@@ -12,4 +12,3 @@ class User(Base):
     password: Mapped[str] = mapped_column(String(255))
     login_dn: Mapped[str] = mapped_column(String(255))
     password_dn: Mapped[str] = mapped_column(String(255))
-    uid: Mapped[int] = mapped_column(BigInteger, default=0)
