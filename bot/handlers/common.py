@@ -11,9 +11,6 @@ router = Router()
 @router.message(CommandStart())
 async def start(ms: Message, **data):
     session: AsyncSession = data["session"]
-    # user = User(email="lednevdosa@gmail.com", class_name="11A", password="1234", login_dn="1", password_dn="2")
-    # session.add(user)
-    # await session.commit()
     res = await session.execute(select(User))
     users = res.scalars().first()
     await ms.answer(users.email or "Пользователи не найдены")
