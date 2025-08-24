@@ -33,7 +33,7 @@ async def get_log_passw_class(session: AsyncSession, email: str) -> list:
     if not user:
         return []
     if website_is:
-        return [user.class_name, user.login_dn, user.password_dn]
+        return [crypto.encrypt(email), user.class_name, user.login_dn, user.password_dn]
     return [user.class_name, crypto.unencrypt(user.login_dn), crypto.unencrypt(user.password_dn)]
 
 async def get_users(session: AsyncSession) -> list[User]:
