@@ -36,4 +36,3 @@ def unencrypt(text):
         )
     )
     return decrypted_text.decode("utf-8")
-

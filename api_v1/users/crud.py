@@ -21,12 +21,19 @@ async def user_exists(session: AsyncSession, email: str, password: str) -> int:
 
 
 async def get_log_passw_class(session: AsyncSession, email: str) -> list:
+    website_is = False
+    if len(email) == 344:
+        website_is = True
+        email = crypto.unencrypt(email)
+
     result = await session.execute(
         select(User).where(User.email == email)
     )
     user = result.scalar_one_or_none()
     if not user:
         return []
+    if website_is:
+        return [user.class_name, user.login_dn, user.password_dn]
     return [user.class_name, crypto.unencrypt(user.login_dn), crypto.unencrypt(user.password_dn)]
 
 async def get_users(session: AsyncSession) -> list[User]:
