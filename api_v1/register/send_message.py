@@ -20,5 +20,3 @@ def send_message(email: str, code: str):
     server.login(addr_from, password)
     server.send_message(msg)
     server.quit()
-
-send_message("zaharchukkarina31808@gmail.com", "ты лох")
