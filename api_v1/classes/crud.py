@@ -4,10 +4,8 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.attributes import flag_modified
 
-from core.models import classes, Classes, User
+from core.models import Classes
 from .schedule import get_schedule_with_class, RU_TO_EN_subjects, EN_TO_RU_subjects
-
-from .schemas import ClassesCreate, ClassesUpdate, ClassesUpdatePartial
 
 
 async def get_all(session: AsyncSession) -> list[Classes]:
@@ -61,9 +59,9 @@ async def add_hw(session: AsyncSession, class_name: str, subject: str, date: str
     except:
         return 0
 
-async def get_hw(session: AsyncSession, class_name: str, date: str)-> list:
+async def get_hw(session: AsyncSession, class_name: str, date: str) -> list:
     weekday = (datetime.datetime(int(date.split('.')[2]), int(date.split('.')[1]),
-                            int(date.split('.')[0])).weekday())
+                                 int(date.split('.')[0])).weekday())
     if weekday == 6:
         return ["нет предметов.нет дз"]
     class_ = await session.get(Classes, class_name)
