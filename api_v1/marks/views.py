@@ -1,16 +1,15 @@
-from fastapi import APIRouter, HTTPException, status, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-import crypto
+from fastapi import APIRouter
 from api_v1.marks import parsing
-from core.models import db_helper
-from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from pydantic import BaseModel
+
 
 class CheckData(BaseModel):
     login: str
     password: str
 
+
 router = APIRouter(tags=["Marks"])
+
 
 @router.post("/check/")
 async def check_lp(data: CheckData):
@@ -20,10 +19,12 @@ async def check_lp(data: CheckData):
     else:
         return 0
 
+
 @router.post("/")
 async def get_marks(data: CheckData):
     res = await parsing.parse(data.login, data.password)
     return res
+
 
 @router.post("/all/")
 async def get_all_marks(data: CheckData):

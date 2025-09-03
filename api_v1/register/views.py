@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,7 +13,8 @@ class RegisterData(BaseModel):
 
 
 @router.post("/", response_model=int)
-async def reg(data: RegisterData,
-              session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-              ):
+async def reg(
+    data: RegisterData,
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+):
     return await crud.send_code(session, data.email)
