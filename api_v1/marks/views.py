@@ -1,11 +1,6 @@
-from fastapi import APIRouter, HTTPException, status, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-import crypto
+from fastapi import APIRouter
 from api_v1.marks import parsing
-from core.models import db_helper
-from pydantic import BaseModel, ConfigDict
-from typing import Optional
-
+from pydantic import BaseModel
 class CheckData(BaseModel):
     login: str
     password: str
