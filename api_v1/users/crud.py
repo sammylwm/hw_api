@@ -3,13 +3,11 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import User
 import crypto
-from .schemas import UserCreate, UserUpdate, UserUpdatePartial
+from .schemas import UserCreate
 
 
 async def user_exists(session: AsyncSession, email: str, password: str) -> int:
-    result = await session.execute(
-        select(User).where(User.email == email)
-    )
+    result = await session.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
     if not user:
         return 0
@@ -26,21 +24,25 @@ async def get_log_passw_class(session: AsyncSession, email: str) -> list:
         website_is = True
         email = crypto.unencrypt(email)
 
-    result = await session.execute(
-        select(User).where(User.email == email)
-    )
+    result = await session.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
     if not user:
         return []
     if website_is:
         return [crypto.encrypt(email), user.class_name, user.login_dn, user.password_dn]
-    return [user.class_name, crypto.unencrypt(user.login_dn), crypto.unencrypt(user.password_dn)]
+    return [
+        user.class_name,
+        crypto.unencrypt(user.login_dn),
+        crypto.unencrypt(user.password_dn),
+    ]
+
 
 async def get_users(session: AsyncSession) -> list[User]:
     stmt = select(User).order_by(User.email)
     result: Result = await session.execute(stmt)
     users = result.scalars().all()
     return list(users)
+
 
 async def create_user(session: AsyncSession, user_in: UserCreate) -> bool:
     try:
@@ -57,8 +59,8 @@ async def create_user(session: AsyncSession, user_in: UserCreate) -> bool:
 
 
 async def delete_user(
-        session: AsyncSession,
-        email: str,
+    session: AsyncSession,
+    email: str,
 ) -> None:
     user = await session.get(User, email)
     await session.delete(user)
