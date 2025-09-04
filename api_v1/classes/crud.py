@@ -1,4 +1,5 @@
 import datetime
+
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -32,9 +33,11 @@ async def create_info_class(session: AsyncSession, class_name: str, owner: str) 
     # await session.refresh(User)
     return class_info
 
+
 async def check_admin(session: AsyncSession, class_name: str, email: str) -> int:
     class_ = await session.get(Classes, class_name)
     return email == class_.owner or email in class_.admins
+
 
 async def less_in_day(class_name:str, subject: str, weekday: str) -> int:
     schedule = get_schedule_with_class(class_name)
@@ -59,6 +62,7 @@ async def add_hw(session: AsyncSession, class_name: str, subject: str, date: str
     except:
         return 0
 
+
 async def get_hw(session: AsyncSession, class_name: str, date: str) -> list:
     weekday = (datetime.datetime(int(date.split('.')[2]), int(date.split('.')[1]),
                                  int(date.split('.')[0])).weekday())
@@ -78,10 +82,12 @@ async def get_hw(session: AsyncSession, class_name: str, date: str) -> list:
             list_hw.append(f"{EN_TO_RU_subjects[subject]}.нет дз")
     return list_hw
 
+
 async def get_admins(session: AsyncSession, class_name: str) -> dict:
     class_ = await session.get(Classes, class_name)
     array = {"owner": class_.owner, "admins": class_.admins}
     return array
+
 
 async def add_admin(session: AsyncSession, class_name: str, email: str) -> int:
     try:
@@ -94,6 +100,7 @@ async def add_admin(session: AsyncSession, class_name: str, email: str) -> int:
         return 1
     except:
         return 0
+
 
 async def del_admin(session: AsyncSession, class_name: str, email: str) -> int:
     try:

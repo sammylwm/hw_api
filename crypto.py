@@ -1,8 +1,7 @@
 import base64
 
-from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.backends import default_backend
 
 with open("private_key.pem", "rb") as f:
     private_key = serialization.load_pem_private_key(

@@ -1,8 +1,8 @@
 from typing import Any
 from datetime import datetime
+import re
 
 from playwright.async_api import async_playwright
-import re
 
 
 async def log_ps(login: str, password: str) -> bool:

@@ -1,7 +1,5 @@
-from sqlalchemy import JSON, BIGINT, String, BigInteger
-from sqlalchemy.ext.mutable import MutableDict, MutableList
+from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
-
 
 from .base import Base
 
