@@ -23,7 +23,9 @@ async def user_exists(session: AsyncSession, email: str, password: str) -> int:
     return 2
 
 
-async def get_log_passw_class(session: AsyncSession, email: str, password: str) -> list:
+async def get_log_passw_class(
+    session: AsyncSession, email: str, password: str | None = None
+) -> list:
     website_is = False
     if len(email) == 344:
         website_is = True
