@@ -46,16 +46,16 @@ def rename_subject(subject):
 
 
 async def parse(login: str, password: str) -> list[list[str | int]]:
-    async with async_playwright() as p:
-        table_rows, grades = await browser_connect(login, password)
-        for row in table_rows:
-            try:
-                date, subject, grade = (await row.all_inner_texts())[0].split("\t")
-                subject = rename_subject(subject)
-            except ValueError:
-                continue
+    array = await browser_connect(login, password)
+    grades: list[list[str | int]] = []
+    for row in array:
+        try:
+            date, subject, grade = row[0].split("\t")
+            subject = rename_subject(subject)
             grades.append([date, subject, int(grade)])
-        return grades
+        except ValueError:
+            continue
+    return grades
 
 
 async def browser_connect(login: str, password: str):
@@ -64,34 +64,33 @@ async def browser_connect(login: str, password: str):
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
         await page.goto("https://dnevnik.pravgym.ru/")
-        login_field = page.locator("input[name=login]")
-        password_field = page.locator("input[name=password]")
-        date_field = page.locator("input[name=date]")
-        await login_field.fill(login)
-        await password_field.fill(password)
-        await date_field.fill(date)
+
+        await page.fill("input[name=login]", login)
+        await page.fill("input[name=password]", password)
+        await page.fill("input[name=date]", date)
         await page.click("button[type=submit]")
+
         await page.locator("tr").first.wait_for()
-        table_rows = (await page.locator("tr").all())[1:]
-        array = []
+        rows = (await page.locator("tr").all())[1:]
+        array = [await row.all_inner_texts() for row in rows]
         await browser.close()
-        return table_rows, array
+        return array
 
 
 async def parse_all(login: str, password: str) -> list[list[str | list[Any]]]:
-    table_rows, array = await browser_connect(login, password)
-    for row in table_rows:
-        array.append(await row.all_inner_texts())
+    array = await browser_connect(login, password)
+
     index_start = array.index(["ПредметСр. баллОценки"])
     index_finish = array.index(["ПредметПериодОценка"])
     grades = array[index_start + 1 : index_finish]
+
     res_array: list[list[str | list[Any]]] = []
     for i in grades:
         text = i[0]
         lesson = re.match(r"\D*", text).group()
         lesson = rename_subject(lesson)
-        bal = re.search(r"\d\.\d\d", text).group()
         bal_match = re.search(r"\d\.\d\d", text)
+        bal = bal_match.group()
         marks = re.findall(r"\d+", text[bal_match.end() :])
         res_array.append([lesson, bal, marks])
     return res_array
