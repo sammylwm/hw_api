@@ -1,4 +1,6 @@
 from fastapi import APIRouter
+
+import crypto
 from api_v1.marks import parsing
 from pydantic import BaseModel
 
@@ -22,11 +24,23 @@ async def check_lp(data: CheckData):
 
 @router.post("/")
 async def get_marks(data: CheckData):
-    res = await parsing.parse(data.login, data.password)
+    login = data.login
+    if len(login) == 344:
+        login = crypto.unencrypt(data.login)
+    password = data.password
+    if len(password) == 344:
+        password = crypto.unencrypt(password)
+    res = await parsing.parse(login, password)
     return res
 
 
 @router.post("/all/")
 async def get_all_marks(data: CheckData):
-    res = await parsing.parse_all(data.login, data.password)
+    login = data.login
+    if len(login) == 344:
+        login = crypto.unencrypt(data.login)
+    password = data.password
+    if len(password) == 344:
+        password = crypto.unencrypt(password)
+    res = await parsing.parse_all(login, password)
     return res
