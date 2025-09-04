@@ -52,10 +52,10 @@ async def add_hw(
 ) -> int:
     try:
         date_obj = datetime.datetime.strptime(date, "%d.%m.%Y")
-        weekday = date_obj.strftime("%A")
-        if not subject in get_schedule_with_class(class_name)[weekday.lower()]:
-            return 0
+        weekday = date_obj.strftime("%A").lower()
         subject = RU_TO_EN_subjects[subject]
+        if not subject in get_schedule_with_class(class_name)[weekday]:
+            return 0
         class_ = await session.get(Classes, class_name)
         homeworks = class_.homeworks
         if subject not in homeworks.keys():
