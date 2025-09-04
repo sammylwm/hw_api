@@ -26,7 +26,10 @@ async def get_classes(session: AsyncSession, class_name: str) -> Classes | None:
 #     owner: Mapped[str]
 #     admins: Mapped[list] = mapped_column(JSON)
 
-async def create_info_class(session: AsyncSession, class_name: str, owner: str) -> Classes:
+
+async def create_info_class(
+    session: AsyncSession, class_name: str, owner: str
+) -> Classes:
     class_info = Classes(class_name=class_name, homeworks={}, owner=owner, admins=[])
     session.add(class_info)
     await session.commit()
@@ -39,15 +42,21 @@ async def check_admin(session: AsyncSession, class_name: str, email: str) -> int
     return email == class_.owner or email in class_.admins
 
 
-async def less_in_day(class_name:str, subject: str, weekday: str) -> int:
+async def less_in_day(class_name: str, subject: str, weekday: str) -> int:
     schedule = get_schedule_with_class(class_name)
     subject = RU_TO_EN_subjects[subject]
     return int(subject in schedule[weekday])
 
 
-async def add_hw(session: AsyncSession, class_name: str, subject: str, date: str, homework: str) -> int:
+async def add_hw(
+    session: AsyncSession, class_name: str, subject: str, date: str, homework: str
+) -> int:
     try:
+        date_obj = datetime.datetime.strptime(date, "%d.%m.%Y")
+        weekday = date_obj.strftime("%A").lower()
         subject = RU_TO_EN_subjects[subject]
+        if not subject in get_schedule_with_class(class_name)[weekday]:
+            return 0
         class_ = await session.get(Classes, class_name)
         homeworks = class_.homeworks
         if subject not in homeworks.keys():
@@ -64,8 +73,9 @@ async def add_hw(session: AsyncSession, class_name: str, subject: str, date: str
 
 
 async def get_hw(session: AsyncSession, class_name: str, date: str) -> list:
-    weekday = (datetime.datetime(int(date.split('.')[2]), int(date.split('.')[1]),
-                                 int(date.split('.')[0])).weekday())
+    weekday = datetime.datetime(
+        int(date.split(".")[2]), int(date.split(".")[1]), int(date.split(".")[0])
+    ).weekday()
     if weekday == 6:
         return ["нет предметов.нет дз"]
     class_ = await session.get(Classes, class_name)
@@ -76,7 +86,7 @@ async def get_hw(session: AsyncSession, class_name: str, date: str) -> list:
     list_hw = []
     for subject in subjects:
         try:
-            hw =  class_.homeworks[subject][date]
+            hw = class_.homeworks[subject][date]
             list_hw.append(f"{EN_TO_RU_subjects[subject]}.{hw}")
         except:
             list_hw.append(f"{EN_TO_RU_subjects[subject]}.нет дз")
