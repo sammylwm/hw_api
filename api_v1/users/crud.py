@@ -23,7 +23,7 @@ async def user_exists(session: AsyncSession, email: str, password: str) -> int:
     return 2
 
 
-async def get_log_passw_class(session: AsyncSession, email: str) -> list:
+async def get_log_passw_class(session: AsyncSession, email: str, password: str) -> list:
     website_is = False
     if len(email) == 344:
         website_is = True
@@ -34,7 +34,13 @@ async def get_log_passw_class(session: AsyncSession, email: str) -> list:
     if not user:
         return []
     if website_is:
-        return [crypto.encrypt(email), user.class_name, user.login_dn, user.password_dn]
+        return [
+            crypto.encrypt(email),
+            user.class_name,
+            user.login_dn,
+            user.password_dn,
+            crypto.encrypt(password),
+        ]
     return [
         user.class_name,
         crypto.unencrypt(user.login_dn),

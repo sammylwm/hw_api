@@ -34,10 +34,10 @@ async def user_get_datas(
 
 @router.post("/web_get_datas/", response_model=list)
 async def user_web_get_datas(
-    data: GetDatas,
+    data: LoginData,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    return await crud.get_log_passw_class(session, encrypt(data.email))
+    return await crud.get_log_passw_class(session, encrypt(data.email), data.password)
 
 
 @router.post(
