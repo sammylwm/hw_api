@@ -7,6 +7,10 @@ from .schemas import UserCreate
 
 
 async def user_exists(session: AsyncSession, email: str, password: str) -> int:
+    if len(email) == 344:
+        email = crypto.unencrypt(email)
+    if len(password) == 344:
+        password = crypto.unencrypt(password)
     result = await session.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
     if not user:
