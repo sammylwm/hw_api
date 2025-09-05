@@ -5,6 +5,7 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.attributes import flag_modified
 
+import crypto
 from core.models import Classes
 from .schedule import get_schedule_with_class, RU_TO_EN_subjects, EN_TO_RU_subjects
 
@@ -39,6 +40,9 @@ async def create_info_class(
 
 async def check_admin(session: AsyncSession, class_name: str, email: str) -> int:
     class_ = await session.get(Classes, class_name)
+    if len(email) == 344:
+        email = crypto.unencrypt(email)
+
     return email == class_.owner or email in class_.admins
 
 
@@ -101,6 +105,8 @@ async def get_admins(session: AsyncSession, class_name: str) -> dict:
 
 async def add_admin(session: AsyncSession, class_name: str, email: str) -> int:
     try:
+        if len(email) == 344:
+            email = crypto.unencrypt(email)
         class_ = await session.get(Classes, class_name)
         admins = class_.admins
         admins.append(email)
@@ -114,6 +120,8 @@ async def add_admin(session: AsyncSession, class_name: str, email: str) -> int:
 
 async def del_admin(session: AsyncSession, class_name: str, email: str) -> int:
     try:
+        if len(email) == 344:
+            email = crypto.unencrypt(email)
         class_ = await session.get(Classes, class_name)
         admins = class_.admins
         admins.remove(email)
