@@ -102,7 +102,7 @@ def get_trimestr() -> str:
 
     first_tr_date = datetime.strptime(f"{current_year}-09-01", "%Y-%m-%d")
     second_tr_date = datetime.strptime(f"{current_year}-11-18", "%Y-%m-%d")
-    third_tr_date = datetime.strptime(f"{current_year}-02-23", "%Y-%m-%d")
+    third_tr_date = datetime.strptime(f"{current_year+1}-02-23", "%Y-%m-%d")
 
     if today >= third_tr_date:
         return third_tr_date.strftime("%Y-%m-%d")
