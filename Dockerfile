@@ -4,8 +4,8 @@ WORKDIR /app
 
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
-
 ENV UV_TOOL_BIN_DIR=/usr/local/bin
+ENV PATH="/app/.venv/bin:$PATH"
 
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
@@ -13,10 +13,11 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-install-project --no-dev
 
 COPY . /app
+
 RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=cache,target=/root/.cache/ms-playwright \
     uv sync --locked --no-dev \
     && uv run playwright install chromium --with-deps
-ENV PATH="/app/.venv/bin:$PATH"
 
 RUN chmod +x entrypoint.sh
 
