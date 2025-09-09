@@ -31,9 +31,6 @@ async def check_admin(
     return await crud.check_admin(session, data.class_name, data.email)
 
 
-
-
-
 @router.post("/less_in_day/", response_model=int)
 async def less_in_day(data: CheckLes):
     return await crud.less_in_day(data.class_name, data.subject, data.weekday)
@@ -47,7 +44,7 @@ async def add_hw(
     return await crud.add_hw(session, data.class_name, data.subject, data.date, data.hw)
 
 
-@router.post("/get_hw/", response_model=list)
+@router.post("/get_hw/", response_model=tuple[list, list, list])
 async def get_hw(
     data: GetHw,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),

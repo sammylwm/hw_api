@@ -76,25 +76,35 @@ async def add_hw(
         return 0
 
 
-async def get_hw(session: AsyncSession, class_name: str, date: str) -> list:
+async def get_hw(
+    session: AsyncSession, class_name: str, date: str
+) -> tuple[list, list, list]:
     weekday = datetime.datetime(
         int(date.split(".")[2]), int(date.split(".")[1]), int(date.split(".")[0])
     ).weekday()
     if weekday == 6:
-        return ["нет предметов.нет дз"]
+        return ["нет предметов"], ["нет дз"], ["0:00\n1:10"]
     class_ = await session.get(Classes, class_name)
     day, month, year = map(int, date.split("."))
     weekday = datetime.date(year, month, day).strftime("%A").lower()
     schedule = get_schedule_with_class(class_name)
-    subjects = schedule[weekday]
-    list_hw = []
-    for subject in subjects:
-        try:
-            hw = class_.homeworks[subject][date]
-            list_hw.append(f"{EN_TO_RU_subjects[subject]}.{hw}")
-        except:
-            list_hw.append(f"{EN_TO_RU_subjects[subject]}.нет дз")
-    return list_hw
+    lesson_times = [
+        "08:10\n08:55",
+        "09:10\n09:55",
+        "10:05\n10:45",
+        "11:00\n11:45",
+        "11:55\n12:40",
+        "13:00\n13:40",
+        "14:00\n14:40",
+        "14:45\n15:25",
+    ]
+
+    subjects = [EN_TO_RU_subjects[subject] for subject in schedule[weekday]]
+    homeworks = [
+        class_.homeworks.get(subject, {}).get(date, "нет дз") for subject in subjects
+    ]
+
+    return subjects, homeworks, lesson_times
 
 
 async def get_admins(session: AsyncSession, class_name: str) -> dict:
