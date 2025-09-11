@@ -49,7 +49,7 @@ async def add_hw(
 ) -> int:
     try:
         locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
-        date_obj = datetime.datetime.strptime("10.09.2025", "%d.%m.%Y")
+        date_obj = datetime.datetime.strptime(date, "%d.%m.%Y")
         weekday = date_obj.strftime("%A").lower()
 
         if not subject in get_schedule_with_class(class_name)[weekday]:
@@ -79,6 +79,7 @@ async def get_hw(
         return ["нет предметов"], ["нет дз"], ["0:00\n1:10"]
     class_ = await session.get(Classes, class_name)
     day, month, year = map(int, date.split("."))
+    locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
     weekday = datetime.date(year, month, day).strftime("%A").lower()
     schedule = get_schedule_with_class(class_name)
     lesson_times = [
