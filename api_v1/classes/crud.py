@@ -101,7 +101,8 @@ async def get_hw(
 
     subjects = [EN_TO_RU_subjects[subject] for subject in schedule[weekday]]
     homeworks = [
-        class_.homeworks.get(subject, {}).get(date, "нет дз") for subject in subjects
+        class_.homeworks.get(RU_TO_EN_subjects[subject], {}).get(date, "нет дз")
+        for subject in subjects
     ]
 
     return subjects, homeworks, lesson_times
