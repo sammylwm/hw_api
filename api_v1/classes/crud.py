@@ -1,4 +1,5 @@
 import datetime
+import locale
 
 from sqlalchemy import select
 from sqlalchemy.engine import Result
@@ -7,7 +8,7 @@ from sqlalchemy.orm.attributes import flag_modified
 
 import crypto
 from core.models import Classes
-from .schedule import get_schedule_with_class, RU_TO_EN_subjects, EN_TO_RU_subjects
+from schedule import get_schedule_with_class
 
 
 async def get_all(session: AsyncSession) -> list[Classes]:
@@ -21,20 +22,12 @@ async def get_classes(session: AsyncSession, class_name: str) -> Classes | None:
     return await session.get(Classes, class_name)
 
 
-# class_name: Mapped[str] = mapped_column(unique=True)
-#     schedule: Mapped[dict] = mapped_column(JSON)
-#     homeworks: Mapped[dict] = mapped_column(JSON)
-#     owner: Mapped[str]
-#     admins: Mapped[list] = mapped_column(JSON)
-
-
 async def create_info_class(
     session: AsyncSession, class_name: str, owner: str
 ) -> Classes:
     class_info = Classes(class_name=class_name, homeworks={}, owner=owner, admins=[])
     session.add(class_info)
     await session.commit()
-    # await session.refresh(User)
     return class_info
 
 
@@ -48,7 +41,6 @@ async def check_admin(session: AsyncSession, class_name: str, email: str) -> int
 
 async def less_in_day(class_name: str, subject: str, weekday: str) -> int:
     schedule = get_schedule_with_class(class_name)
-    subject = RU_TO_EN_subjects[subject]
     return int(subject in schedule[weekday])
 
 
@@ -56,9 +48,10 @@ async def add_hw(
     session: AsyncSession, class_name: str, subject: str, date: str, homework: str
 ) -> int:
     try:
-        date_obj = datetime.datetime.strptime(date, "%d.%m.%Y")
+        locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
+        date_obj = datetime.datetime.strptime("10.09.2025", "%d.%m.%Y")
         weekday = date_obj.strftime("%A").lower()
-        subject = RU_TO_EN_subjects[subject]
+
         if not subject in get_schedule_with_class(class_name)[weekday]:
             return 0
         class_ = await session.get(Classes, class_name)
@@ -99,13 +92,12 @@ async def get_hw(
         "14:45\n15:25",
     ]
 
-    subjects = [EN_TO_RU_subjects[subject] for subject in schedule[weekday]]
     homeworks = [
-        class_.homeworks.get(RU_TO_EN_subjects[subject], {}).get(date, "нет дз")
-        for subject in subjects
+        class_.homeworks.get(subject, {}).get(date, "нет дз")
+        for subject in schedule[weekday]
     ]
 
-    return subjects, homeworks, lesson_times
+    return schedule[weekday], homeworks, lesson_times
 
 
 async def get_admins(session: AsyncSession, class_name: str) -> dict:
