@@ -1,5 +1,4 @@
 import datetime
-import locale
 
 from sqlalchemy import select
 from sqlalchemy.engine import Result
@@ -9,6 +8,17 @@ from sqlalchemy.orm.attributes import flag_modified
 import crypto
 from core.models import Classes
 from schedule import get_schedule_with_class
+
+
+days_ru = {
+    0: "понедельник",
+    1: "вторник",
+    2: "среда",
+    3: "четверг",
+    4: "пятница",
+    5: "суббота",
+    6: "воскресенье",
+}
 
 
 async def get_all(session: AsyncSession) -> list[Classes]:
@@ -48,9 +58,8 @@ async def add_hw(
     session: AsyncSession, class_name: str, subject: str, date: str, homework: str
 ) -> int:
     try:
-        locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
-        date_obj = datetime.datetime.strptime(date, "%d.%m.%Y")
-        weekday = date_obj.strftime("%A").lower()
+        date_obj = datetime.datetime.strptime(date, "%d.%m.%Y").weekday()
+        weekday = days_ru[date_obj]
 
         if not subject in get_schedule_with_class(class_name)[weekday]:
             return 0
@@ -79,8 +88,7 @@ async def get_hw(
         return ["нет предметов"], ["нет дз"], ["0:00\n1:10"]
     class_ = await session.get(Classes, class_name)
     day, month, year = map(int, date.split("."))
-    locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
-    weekday = datetime.date(year, month, day).strftime("%A").lower()
+    weekday = days_ru[datetime.date(year, month, day).weekday()]
     schedule = get_schedule_with_class(class_name)
     lesson_times = [
         "08:10\n08:55",
