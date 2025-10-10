@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+FROM ghcr.io/astral-sh/uv:latest
 
 WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
