@@ -9,7 +9,8 @@ services:
     ports:
       - "8001:8000"
     command:
-      - "python"
+      - "uv"
+      - "run"
       - "main.py"
     develop:
       watch:
