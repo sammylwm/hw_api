@@ -6,11 +6,7 @@ ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
 ENV UV_TOOL_BIN_DIR=/usr/local/bin
 
-# ✅ Добавь этот блок — решает твою ошибку
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    python3-dev \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get install build-essential libssl-dev libffi-dev python-dev
 
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
