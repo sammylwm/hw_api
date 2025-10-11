@@ -5,15 +5,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     pkg-config \
     libssl-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY pyproject.toml uv.lock ./
-
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen
-
-COPY . /app
-RUN apt-get install -y \
     libnspr4 \
     libnss3 \
     libdbus-1-3 \
@@ -26,8 +17,15 @@ RUN apt-get install -y \
     libxrandr2 \
     libgbm1 \
     libxkbcommon0 \
-    libasound2
+    libasound2 \
+    && rm -rf /var/lib/apt/lists/*
 
+COPY pyproject.toml uv.lock ./
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen
+
+COPY . /app
 
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv run playwright install chromium
