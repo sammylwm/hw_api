@@ -15,7 +15,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 COPY . /app
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv run playwright install chromium
+    uv run playwright install chromium --with-deps
 
 RUN chmod +x entrypoint.sh
 
